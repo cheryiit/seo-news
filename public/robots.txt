@@ -1,0 +1,13 @@
+# www.robotstxt.org
+
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://your-domain.com/sitemap.xml
+
+# Disallow
+Disallow: /api/
+Disallow: /admin/
+Disallow: /wp-admin/
+Disallow: /wp-login.php 

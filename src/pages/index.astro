@@ -1,0 +1,150 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import { getAllArticles } from '../lib/wordpress';
+
+let articles = [];
+let error = null;
+
+try {
+  articles = await getAllArticles();
+} catch (e) {
+  console.error('Failed to fetch articles:', e);
+  error = e instanceof Error ? e.message : 'Failed to load articles';
+  // Fallback data for development
+  if (import.meta.env.DEV) {
+    articles = [
+      {
+        title: 'Meteoroloji\'den fırtına ve kar uyarısı: İstanbul\'dan geçip aşağıya ilerleyecek',
+        excerpt: 'Meteoroloji Genel Müdürlüğü, İstanbul ve çevresi için fırtına ve kar yağışı uyarısında bulundu.',
+        image: '/images/placeholder.svg',
+        category: 'TÜRKİYE',
+        date: new Date().toISOString(),
+        author: 'SEO News',
+        href: '/haber/meteoroloji-firtina-kar-uyarisi',
+      },
+      {
+        title: 'İBB 1532 personel alacak: Ekrem İmamoğlu paylaştı',
+        excerpt: 'İstanbul Büyükşehir Belediyesi (İBB), farklı pozisyonlarda görevlendirilmek üzere 1532 personel alımı yapacağını duyurdu.',
+        image: '/images/placeholder.svg',
+        category: 'SİYASET',
+        date: new Date().toISOString(),
+        author: 'SEO News',
+        href: '/haber/ibb-personel-alimi',
+      },
+      {
+        title: 'Altın haftaya rekorla başladı: Dolar 36 liranın üzerinde',
+        excerpt: 'Altın fiyatları yeni haftaya rekor seviyelerden başlarken, dolar kuru da yükselişini sürdürüyor.',
+        image: '/images/placeholder.svg',
+        category: 'EKONOMİ',
+        date: new Date().toISOString(),
+        author: 'SEO News',
+        href: '/haber/altin-dolar-rekor',
+      },
+    ];
+  }
+}
+---
+
+<MainLayout title="SEO News - Güncel Haberler, Son Dakika Gelişmeleri">
+  <section class="space-y-8">
+    {error && (
+      <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-8">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-red-700">
+              {error}
+            </p>
+          </div>
+        </div>
+      </div>
+    )}
+
+    <!-- Breaking News -->
+    {articles.length > 0 && (
+      <div class="bg-primary/10 p-4 rounded-lg">
+        <div class="flex items-center space-x-4">
+          <span class="bg-primary text-white px-3 py-1 rounded text-sm font-bold">
+            SON DAKİKA
+          </span>
+          <div class="overflow-hidden">
+            <div class="animate-marquee whitespace-nowrap">
+              {articles.map((article) => (
+                <a
+                  href={article.href}
+                  class="inline-block mr-8 text-primary hover:text-primary/80"
+                >
+                  {article.title}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+
+    <!-- Featured Articles Grid -->
+    {articles.length > 0 && (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {articles.map((article, index) => (
+          <ArticleCard {...article} priority={index === 0} />
+        ))}
+      </div>
+    )}
+
+    <!-- Category Sections -->
+    {articles.length > 0 && (
+      <div class="space-y-12">
+        {['SİYASET', 'EKONOMİ', 'DÜNYA'].map((category) => {
+          const categoryArticles = articles.filter((article) => article.category === category);
+          if (categoryArticles.length === 0) return null;
+
+          return (
+            <section>
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold text-secondary">{category}</h2>
+                <a
+                  href={`/kategori/${category.toLowerCase()}`}
+                  class="text-primary hover:text-primary/80 text-sm font-medium"
+                >
+                  Tümünü Gör
+                </a>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {categoryArticles.slice(0, 3).map((article) => (
+                  <ArticleCard {...article} />
+                ))}
+              </div>
+            </section>
+          );
+        })}
+      </div>
+    )}
+
+    {articles.length === 0 && !error && (
+      <div class="text-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+        <p class="mt-4 text-gray-600">Haberler yükleniyor...</p>
+      </div>
+    )}
+  </section>
+
+  <style>
+    @keyframes marquee {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+    .animate-marquee {
+      animation: marquee 30s linear infinite;
+    }
+  </style>
+</MainLayout>

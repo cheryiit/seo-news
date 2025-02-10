@@ -1,0 +1,80 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { getArticlesByCategory, getAllCategories } from '../../lib/wordpress';
+
+export async function getStaticPaths() {
+  const categories = await getAllCategories();
+  return categories.map((category) => ({
+    params: { slug: category.slug },
+    props: { category },
+  }));
+}
+
+const { category } = Astro.props;
+let articles = [];
+let error = null;
+
+try {
+  articles = await getArticlesByCategory(category.name);
+} catch (e) {
+  console.error(`Failed to fetch articles for category ${category.name}:`, e);
+  error = e instanceof Error ? e.message : 'Failed to load articles';
+}
+
+const title = `${category.name} Haberleri - SEO News`;
+const description = category.description || `${category.name} kategorisindeki en güncel haberler ve gelişmeler`;
+---
+
+<MainLayout title={title} description={description}>
+  <section class="space-y-8">
+    <div class="border-b border-gray-200 pb-8">
+      <h1 class="text-4xl font-bold text-secondary">{category.name}</h1>
+      {category.description && (
+        <p class="mt-4 text-gray-600">{category.description}</p>
+      )}
+    </div>
+
+    {error && (
+      <div class="bg-red-50 border-l-4 border-red-400 p-4">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-red-700">
+              {error}
+            </p>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {articles.length > 0 ? (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {articles.map((article) => (
+          <ArticleCard {...article} />
+        ))}
+      </div>
+    ) : !error && (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {Array(6).fill(null).map((_, i) => (
+          <ArticleCard
+            loading={true}
+            title=""
+            excerpt=""
+            image=""
+            category=""
+            date=""
+            author=""
+            href=""
+          />
+        ))}
+      </div>
+    )}
+
+    <!-- Pagination can be added here -->
+  </section>
+</MainLayout> 

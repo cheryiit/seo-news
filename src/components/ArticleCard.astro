@@ -1,0 +1,87 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  title: string;
+  excerpt: string;
+  image: string;
+  category: string;
+  date: string;
+  author: string;
+  href: string;
+  priority?: boolean;
+  loading?: boolean;
+}
+
+const {
+  title,
+  excerpt,
+  image,
+  category,
+  date,
+  author,
+  href,
+  priority = false,
+  loading = false,
+} = Astro.props;
+
+const formattedDate = new Date(date).toLocaleDateString('tr-TR', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<article
+  class={`bg-white rounded-lg shadow-md overflow-hidden ${
+    priority ? 'md:col-span-2 md:row-span-2' : ''
+  } ${loading ? 'animate-pulse' : ''}`}
+>
+  {loading ? (
+    <div class="space-y-4">
+      <div class="bg-gray-200 w-full h-48"></div>
+      <div class="p-4 space-y-3">
+        <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+        <div class="h-4 bg-gray-200 rounded w-full"></div>
+      </div>
+    </div>
+  ) : (
+    <a href={href} class="group">
+      <div class="relative">
+        <Image
+          src={image}
+          alt={title}
+          width={priority ? 800 : 400}
+          height={priority ? 450 : 225}
+          class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        />
+        <div class="absolute top-4 left-4">
+          <span
+            class="inline-block bg-primary text-white text-xs px-2 py-1 rounded"
+          >
+            {category}
+          </span>
+        </div>
+      </div>
+      <div class="p-4 space-y-2">
+        <h2
+          class={`font-heading font-bold text-secondary line-clamp-2 group-hover:text-primary transition-colors ${
+            priority ? 'text-2xl' : 'text-lg'
+          }`}
+        >
+          {title}
+        </h2>
+        <p class="text-gray-600 text-sm line-clamp-2">
+          {excerpt}
+        </p>
+        <div class="flex items-center justify-between text-xs text-gray-500 pt-2">
+          <span>{author}</span>
+          <time datetime={date}>
+            {formattedDate}
+          </time>
+        </div>
+      </div>
+    </a>
+  )}
+</article> 

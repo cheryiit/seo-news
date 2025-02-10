@@ -1,0 +1,86 @@
+# Project Instructions
+
+Use the provided project idea and adhere to the specifications and guidelines to build the project.
+
+[[project-idea]]
+
+## Overview
+
+This project involves building a modular, highly SEO-optimized news website inspired by halktv.com.tr. The website's purpose is to serve as a dynamic and user-friendly platform for sharing news articles, categories, and multimedia content. The backend content will be managed using Headless WordPress, while Astro will be utilized to create a fast, responsive, and high-performance frontend. Key considerations include modularity, maintainability, and ensuring a seamless user experience with optimal SEO practices.
+
+The site will dynamically fetch news content, images, and metadata from WordPress using GraphQL for precise and efficient data queries. Static assets like logos and icons will be stored in the public directory for faster access, while article images and content will be handled by WordPress. All environment-specific data, such as API keys and endpoints, will be securely stored in a `.env` file. The website must be fully responsive and mobile-friendly, ensuring an excellent user experience across all devices.
+
+## Tech Stack
+
+- **Frontend Framework:** Astro (HTML-first, static site generation, SSR, and partial hydration)
+- **CMS:** Headless WordPress (using GraphQL for flexible and efficient data queries)
+- **Styling:** Tailwind CSS (utility-first, responsive design system)
+- **Routing:** Astro’s built-in file-based routing
+- **Image Optimization:** Astro’s native image optimization tools (lazy loading, responsive sizes)
+- **Environment Management:** `.env` file to securely store sensitive information like API keys
+- **Deployment Platform:** Vercel (optimized for Astro projects with CI/CD pipelines)
+- **SEO Tools:**
+  - Astro SEO plugins for sitemap generation, metadata, and schema.org
+  - Manual addition of structured data for enhanced SEO
+  - Astro’s `<SEO>` component for managing meta tags
+- **Performance Enhancements:**
+  - CDN caching (Vercel)
+  - Lazy loading for images and videos
+
+## Project Structure
+
+- **src/pages**
+  - Route-based pages like `index.astro`, `category/[slug].astro`, and `news/[slug].astro`
+- **src/components**
+  - Reusable UI components such as `Header.astro`, `Footer.astro`, `ArticleCard.astro`, and `CategoryMenu.astro`
+- **src/layouts**
+  - Layouts like `MainLayout.astro` to wrap pages with consistent structure and styling
+- **src/lib**
+  - Helper functions for API calls to WordPress, such as `fetchArticles` and `fetchCategories`
+- **public/**
+  - Static assets (logos, icons, fonts) accessible globally
+- **astro.config.mjs**
+  - Configuration file for Astro, including plugins and integrations
+- **tailwind.config.js**
+  - Tailwind CSS configuration for theme customization and responsive breakpoints
+- **package.json**
+  - NPM dependencies and scripts for development and production
+- **.env**
+  - Stores sensitive keys such as the WordPress GraphQL endpoint and API keys
+
+## Rules
+
+### General Rules
+- Write modular and reusable components to maintain clean and scalable code.
+- Use semantic HTML to improve accessibility and SEO.
+- Keep all CSS utility-based, relying on Tailwind CSS for styling.
+- Ensure the website is fully responsive and optimized for mobile devices.
+- You should build a website similar to the example websites in the images in the Images folder.
+
+### Environment Rules
+- Store sensitive keys, such as GraphQL endpoints and API keys, in a `.env` file.
+- Prefix frontend-accessible environment variables with `PUBLIC_`.
+- Avoid hardcoding API URLs or sensitive information.
+
+### Development Guidelines
+- Use Prettier for automatic code formatting.
+- Enforce strict linting with ESLint to maintain code quality.
+- Optimize all meta tags, titles, and descriptions for SEO using Astro’s SEO utilities.
+- Ensure responsive design for all screen sizes using Tailwind CSS utilities.
+
+### Performance Guidelines
+- Prioritize static site generation for maximum speed and SEO.
+- Optimize images using Astro’s built-in tools (e.g., responsive image generation, lazy loading).
+- Utilize Astro’s partial hydration to load JavaScript only for interactive components.
+- Aim for a perfect Google Lighthouse score (100% in performance, SEO, and accessibility).
+
+## Additional Guidelines
+
+- **Accessibility:** Follow WCAG 2.1 standards to ensure a fully accessible website.
+- **Testing:** Write unit tests for all major components using a lightweight framework like Vitest.
+- **Documentation:** Provide a detailed README file with setup instructions and project details.
+- **Deployment:** Use Vercel for zero-downtime deployment and seamless CI/CD workflows.
+- **SEO Enhancements:**
+  - Implement OpenGraph and Twitter card metadata for social sharing.
+  - Include structured data for articles and breadcrumbs using JSON-LD.
+  - Auto-generate and submit an XML sitemap to search engines.
